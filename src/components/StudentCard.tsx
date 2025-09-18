@@ -9,10 +9,11 @@ interface Student {
   id: number;
   name: string;
   avatar: string;
-  homework: number;
-  activity: number;
-  answers: number;
-  achievements: string[];
+  homework_score: number;
+  activity_score: number;
+  answers_score: number;
+  total_rating: number;
+  achievements: Achievement[];
   level: number;
 }
 
@@ -30,7 +31,7 @@ interface StudentCardProps {
   position: number;
   totalRating: number;
   achievements: Achievement[];
-  onUpdatePoints: (studentId: number, category: 'homework' | 'activity' | 'answers', delta: number) => void;
+  onUpdatePoints: (studentId: number, category: 'homework_score' | 'activity_score' | 'answers_score', delta: number) => void;
 }
 
 const StudentCard: React.FC<StudentCardProps> = ({
@@ -40,9 +41,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
   achievements,
   onUpdatePoints
 }) => {
-  const getAchievementInfo = (achievementId: string) => {
-    return achievements.find(a => a.id === achievementId);
-  };
+
 
   const getRankIcon = (position: number) => {
     switch (position) {
@@ -95,23 +94,23 @@ const StudentCard: React.FC<StudentCardProps> = ({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onUpdatePoints(student.id, 'homework', -5)}
+                onClick={() => onUpdatePoints(student.id, 'homework_score', -5)}
                 className="w-8 h-8 p-0"
               >
                 <Icon name="Minus" size={14} />
               </Button>
-              <span className="w-12 text-center font-semibold">{student.homework}</span>
+              <span className="w-12 text-center font-semibold">{student.homework_score}</span>
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onUpdatePoints(student.id, 'homework', 5)}
+                onClick={() => onUpdatePoints(student.id, 'homework_score', 5)}
                 className="w-8 h-8 p-0"
               >
                 <Icon name="Plus" size={14} />
               </Button>
             </div>
           </div>
-          <Progress value={student.homework} className="h-2" />
+          <Progress value={student.homework_score} className="h-2" />
         </div>
 
         <div className="space-y-3">
@@ -124,23 +123,23 @@ const StudentCard: React.FC<StudentCardProps> = ({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onUpdatePoints(student.id, 'answers', -5)}
+                onClick={() => onUpdatePoints(student.id, 'answers_score', -5)}
                 className="w-8 h-8 p-0"
               >
                 <Icon name="Minus" size={14} />
               </Button>
-              <span className="w-12 text-center font-semibold">{student.answers}</span>
+              <span className="w-12 text-center font-semibold">{student.answers_score}</span>
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onUpdatePoints(student.id, 'answers', 5)}
+                onClick={() => onUpdatePoints(student.id, 'answers_score', 5)}
                 className="w-8 h-8 p-0"
               >
                 <Icon name="Plus" size={14} />
               </Button>
             </div>
           </div>
-          <Progress value={student.answers} className="h-2" />
+          <Progress value={student.answers_score} className="h-2" />
         </div>
 
         <div className="space-y-3">
@@ -153,44 +152,39 @@ const StudentCard: React.FC<StudentCardProps> = ({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onUpdatePoints(student.id, 'activity', -5)}
+                onClick={() => onUpdatePoints(student.id, 'activity_score', -5)}
                 className="w-8 h-8 p-0"
               >
                 <Icon name="Minus" size={14} />
               </Button>
-              <span className="w-12 text-center font-semibold">{student.activity}</span>
+              <span className="w-12 text-center font-semibold">{student.activity_score}</span>
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => onUpdatePoints(student.id, 'activity', 5)}
+                onClick={() => onUpdatePoints(student.id, 'activity_score', 5)}
                 className="w-8 h-8 p-0"
               >
                 <Icon name="Plus" size={14} />
               </Button>
             </div>
           </div>
-          <Progress value={student.activity} className="h-2" />
+          <Progress value={student.activity_score} className="h-2" />
         </div>
 
         {student.achievements.length > 0 && (
           <div className="pt-3 border-t">
             <div className="text-sm font-medium text-gray-700 mb-2">Достижения:</div>
             <div className="flex flex-wrap gap-2">
-              {student.achievements.map(achievementId => {
-                const achievement = getAchievementInfo(achievementId);
-                if (!achievement) return null;
-                
-                return (
-                  <div
-                    key={achievementId}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-lg text-white text-xs font-medium ${achievement.color} animate-pulse-glow`}
-                  >
-                    <span>{achievement.icon}</span>
-                    <span>{achievement.title}</span>
-                    <span className="text-xs opacity-75">+{achievement.points}</span>
-                  </div>
-                );
-              })}
+              {student.achievements.map(achievement => (
+                <div
+                  key={achievement.id}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-lg text-white text-xs font-medium ${achievement.color} animate-pulse-glow`}
+                >
+                  <span>{achievement.icon}</span>
+                  <span>{achievement.title}</span>
+                  <span className="text-xs opacity-75">+{achievement.points}</span>
+                </div>
+              ))
             </div>
           </div>
         )}

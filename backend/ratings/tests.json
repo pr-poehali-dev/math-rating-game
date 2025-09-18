@@ -1,0 +1,40 @@
+{
+  "tests": [
+    {
+      "name": "Get students with ratings",
+      "method": "GET",
+      "path": "/?endpoint=students",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "students": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get all achievements",
+      "method": "GET", 
+      "path": "/?endpoint=achievements",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "achievements": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Update student rating",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "student_id": 1,
+        "homework_score": 90,
+        "activity_score": 85,
+        "answers_score": 88
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

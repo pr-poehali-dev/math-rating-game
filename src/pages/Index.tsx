@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import StudentCard from '@/components/StudentCard';
@@ -9,10 +9,11 @@ interface Student {
   id: number;
   name: string;
   avatar: string;
-  homework: number;
-  activity: number;
-  answers: number;
-  achievements: string[];
+  homework_score: number;
+  activity_score: number;
+  answers_score: number;
+  total_rating: number;
+  achievements: Achievement[];
   level: number;
 }
 
@@ -54,48 +55,8 @@ const Index = () => {
     points: 10 
   });
 
-  const [students, setStudents] = useState<Student[]>([
-    {
-      id: 1,
-      name: 'Илья',
-      avatar: '🧑‍🎓',
-      homework: 85,
-      activity: 78,
-      answers: 92,
-      achievements: ['first-place', 'homework-master'],
-      level: 5
-    },
-    {
-      id: 2,
-      name: 'Даша',
-      avatar: '👩‍🎓',
-      homework: 92,
-      activity: 88,
-      answers: 85,
-      achievements: ['homework-master', 'active-student'],
-      level: 6
-    },
-    {
-      id: 3,
-      name: 'Вика',
-      avatar: '👩‍🔬',
-      homework: 76,
-      activity: 95,
-      answers: 80,
-      achievements: ['active-student'],
-      level: 4
-    },
-    {
-      id: 4,
-      name: 'Настя',
-      avatar: '👩‍💻',
-      homework: 88,
-      activity: 82,
-      answers: 90,
-      achievements: ['rising-star'],
-      level: 5
-    }
-  ]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [homeworks, setHomeworks] = useState<Homework[]>([
     {
@@ -143,53 +104,68 @@ const Index = () => {
     }
   ]);
 
-  const achievements: Achievement[] = [
-    {
-      id: 'first-place',
-      title: 'Первое место',
-      icon: '🏆',
-      description: 'Лучший результат в группе',
-      points: 100,
-      color: 'bg-game-orange'
-    },
-    {
-      id: 'homework-master',
-      title: 'Мастер ДЗ',
-      icon: '📚',
-      description: 'Выполнил 10 домашних заданий подряд',
-      points: 50,
-      color: 'bg-game-turquoise'
-    },
-    {
-      id: 'active-student',
-      title: 'Активист',
-      icon: '🙋‍♀️',
-      description: 'Самый активный на уроках',
-      points: 75,
-      color: 'bg-game-purple'
-    },
-    {
-      id: 'rising-star',
-      title: 'Восходящая звезда',
-      icon: '⭐',
-      description: 'Лучший прогресс за месяц',
-      points: 60,
-      color: 'bg-game-yellow'
-    }
-  ];
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
 
   const getTotalRating = (student: Student) => {
-    return Math.round((student.homework + student.activity + student.answers) / 3);
+    return student.total_rating;
   };
 
-  const updateStudentPoints = (studentId: number, category: 'homework' | 'activity' | 'answers', delta: number) => {
-    setStudents(prev => prev.map(student => {
-      if (student.id === studentId) {
-        const newValue = Math.max(0, Math.min(100, student[category] + delta));
-        return { ...student, [category]: newValue };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Fetch students
+        const studentsResponse = await fetch('https://functions.poehali.dev/98f71d83-65a5-49cc-89fa-16b29da8d6cb?endpoint=students');
+        const studentsData = await studentsResponse.json();
+        
+        // Fetch achievements
+        const achievementsResponse = await fetch('https://functions.poehali.dev/98f71d83-65a5-49cc-89fa-16b29da8d6cb?endpoint=achievements');
+        const achievementsData = await achievementsResponse.json();
+        
+        setStudents(studentsData.students || []);
+        setAchievements(achievementsData.achievements || []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
-      return student;
-    }));
+    };
+    
+    fetchData();
+  }, []);
+
+  const updateStudentPoints = async (studentId: number, category: 'homework_score' | 'activity_score' | 'answers_score', delta: number) => {
+    const student = students.find(s => s.id === studentId);
+    if (!student) return;
+    
+    const newValue = Math.max(0, Math.min(100, student[category] + delta));
+    
+    try {
+      const response = await fetch('https://functions.poehali.dev/98f71d83-65a5-49cc-89fa-16b29da8d6cb', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          student_id: studentId,
+          homework_score: category === 'homework_score' ? newValue : student.homework_score,
+          activity_score: category === 'activity_score' ? newValue : student.activity_score,
+          answers_score: category === 'answers_score' ? newValue : student.answers_score,
+        }),
+      });
+      
+      if (response.ok) {
+        setStudents(prev => prev.map(student => {
+          if (student.id === studentId) {
+            return { ...student, [category]: newValue };
+          }
+          return student;
+        }));
+      }
+    } catch (error) {
+      console.error('Error updating student points:', error);
+    }
   };
 
   const createHomework = () => {
@@ -261,18 +237,24 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="ratings" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
-              {sortedStudents.map((student, index) => (
-                <StudentCard
-                  key={student.id}
-                  student={student}
-                  position={index + 1}
-                  totalRating={getTotalRating(student)}
-                  achievements={achievements}
-                  onUpdatePoints={updateStudentPoints}
-                />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="text-lg text-gray-600">Загрузка данных...</div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+                {sortedStudents.map((student, index) => (
+                  <StudentCard
+                    key={student.id}
+                    student={student}
+                    position={index + 1}
+                    totalRating={getTotalRating(student)}
+                    achievements={achievements}
+                    onUpdatePoints={updateStudentPoints}
+                  />
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="homework" className="space-y-6">
