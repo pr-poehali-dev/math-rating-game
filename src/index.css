@@ -89,6 +89,12 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Game colors */
+    --game-orange: 25 95% 53%;
+    --game-turquoise: 184 91% 17%;
+    --game-purple: 262 83% 58%;
+    --game-yellow: 48 96% 53%;
   }
 }
 
@@ -104,5 +110,73 @@
       system-ui,
       -apple-system,
       sans-serif;
+  }
+}
+
+@layer utilities {
+  .bg-game-orange {
+    background-color: hsl(var(--game-orange));
+  }
+  .bg-game-turquoise {
+    background-color: hsl(var(--game-turquoise));
+  }
+  .bg-game-purple {
+    background-color: hsl(var(--game-purple));
+  }
+  .bg-game-yellow {
+    background-color: hsl(var(--game-yellow));
+  }
+  .text-game-orange {
+    color: hsl(var(--game-orange));
+  }
+  .text-game-turquoise {
+    color: hsl(var(--game-turquoise));
+  }
+  .text-game-purple {
+    color: hsl(var(--game-purple));
+  }
+  .text-game-yellow {
+    color: hsl(var(--game-yellow));
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .game-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--game-orange)) 0%,
+      hsl(var(--game-turquoise)) 25%,
+      hsl(var(--game-purple)) 50%,
+      hsl(var(--game-yellow)) 75%,
+      hsl(var(--game-orange)) 100%
+    );
+    background-size: 400% 400%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }

@@ -116,11 +116,11 @@ const Index = () => {
         setIsLoading(true);
         
         // Fetch students
-        const studentsResponse = await fetch('https://functions.poehali.dev/98f71d83-65a5-49cc-89fa-16b29da8d6cb?endpoint=students');
+        const studentsResponse = await fetch('https://functions.poehali.dev/414b826b-f9b6-4006-98e3-9e9938a06331?endpoint=students');
         const studentsData = await studentsResponse.json();
         
         // Fetch achievements
-        const achievementsResponse = await fetch('https://functions.poehali.dev/98f71d83-65a5-49cc-89fa-16b29da8d6cb?endpoint=achievements');
+        const achievementsResponse = await fetch('https://functions.poehali.dev/414b826b-f9b6-4006-98e3-9e9938a06331?endpoint=achievements');
         const achievementsData = await achievementsResponse.json();
         
         setStudents(studentsData.students || []);
@@ -142,7 +142,7 @@ const Index = () => {
     const newValue = Math.max(0, Math.min(100, student[category] + delta));
     
     try {
-      const response = await fetch('https://functions.poehali.dev/98f71d83-65a5-49cc-89fa-16b29da8d6cb', {
+      const response = await fetch('https://functions.poehali.dev/414b826b-f9b6-4006-98e3-9e9938a06331', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
