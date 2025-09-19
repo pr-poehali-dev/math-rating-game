@@ -201,7 +201,7 @@ const Index = () => {
       return hw;
     }));
     
-    updateStudentPoints(studentId, 'homework', grade);
+    updateStudentPoints(studentId, 'homework_score', grade);
   };
 
   const handleNewHomeworkChange = (field: string, value: string | number) => {

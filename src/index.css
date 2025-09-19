@@ -36,6 +36,12 @@
 
     --radius: 0.5rem;
 
+    /* Game colors */
+    --game-orange: 25 95% 53%;
+    --game-turquoise: 184 91% 17%;
+    --game-purple: 262 83% 58%;
+    --game-yellow: 48 96% 53%;
+
     --sidebar-background: 0 0% 98%;
 
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -89,12 +95,6 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* Game colors */
-    --game-orange: 25 95% 53%;
-    --game-turquoise: 184 91% 17%;
-    --game-purple: 262 83% 58%;
-    --game-yellow: 48 96% 53%;
   }
 }
 
