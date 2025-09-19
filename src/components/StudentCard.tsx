@@ -41,8 +41,6 @@ const StudentCard: React.FC<StudentCardProps> = ({
   achievements,
   onUpdatePoints
 }) => {
-
-
   const getRankIcon = (position: number) => {
     switch (position) {
       case 1: return '🥇';
@@ -175,7 +173,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
           <div className="pt-3 border-t">
             <div className="text-sm font-medium text-gray-700 mb-2">Достижения:</div>
             <div className="flex flex-wrap gap-2">
-              {student.achievements.map(achievement => (
+              {student.achievements.map((achievement) => (
                 <div
                   key={achievement.id}
                   className={`flex items-center gap-1 px-2 py-1 rounded-lg text-white text-xs font-medium ${achievement.color} animate-pulse-glow`}
@@ -184,7 +182,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
                   <span>{achievement.title}</span>
                   <span className="text-xs opacity-75">+{achievement.points}</span>
                 </div>
-              ))
+              ))}
             </div>
           </div>
         )}
